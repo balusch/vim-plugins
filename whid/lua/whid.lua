@@ -69,9 +69,9 @@ local function update_view(direction)
     local git_root = string.gsub(vim.fn.system('git rev-parse --show-toplevel'), '\n', '')  -- cannot cancat string with newline
     local result = vim.fn.systemlist('git diff-tree --no-commit-id --name-only -r HEAD~'..position)
     if #result == 0 then table.insert(result, '') end -- add  an empty line to preserve layout if there is no results
-    for k,v in pairs(result) do
-        if result[k] ~= '' then
-            result[k] = '  '..git_root..'/'..result[k]
+    for i, path in ipairs(result) do
+        if result[i] ~= '' then
+            result[i] = '  '..git_root..'/'..path
         end
     end
 
