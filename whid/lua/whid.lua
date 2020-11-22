@@ -66,10 +66,13 @@ local function update_view(direction)
     position = position + direction
     if position < 0 then position = 0 end
 
-    local result = vim.fn.systemlist('git diff-tree --no-commit-id --name-only -r  HEAD~'..position)
+    local git_root = string.gsub(vim.fn.system('git rev-parse --show-toplevel'), '\n', '')  -- cannot cancat string with newline
+    local result = vim.fn.systemlist('git diff-tree --no-commit-id --name-only -r HEAD~'..position)
     if #result == 0 then table.insert(result, '') end -- add  an empty line to preserve layout if there is no results
     for k,v in pairs(result) do
-        result[k] = '  '..result[k]
+        if result[k] ~= '' then
+            result[k] = '  '..git_root..'/'..result[k]
+        end
     end
 
     api.nvim_buf_set_lines(buf, 1, 2, false, {center('HEAD~'..position)})
